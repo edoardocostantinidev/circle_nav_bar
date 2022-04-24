@@ -57,8 +57,10 @@ class CircleNavBar extends StatefulWidget {
     this.elevation = 0,
     this.gradient,
   })  : assert(circleWidth <= height, "circleWidth <= height"),
-        assert(activeIcons.length == inactiveIcons.length, "activeIcons.length and inactiveIcons.length must be equal!"),
-        assert(activeIcons.length > initIndex, "activeIcons.length > initIndex"),
+        assert(activeIcons.length == inactiveIcons.length,
+            "activeIcons.length and inactiveIcons.length must be equal!"),
+        assert(
+            activeIcons.length > initIndex, "activeIcons.length > initIndex"),
         super(key: key);
 
   /// Bottom bar height (without bottom padding)
@@ -147,12 +149,15 @@ class CircleNavBar extends StatefulWidget {
   State<StatefulWidget> createState() => _CircleNavBarState();
 }
 
-class _CircleNavBarState extends State<CircleNavBar> with TickerProviderStateMixin {
-  late AnimationController tabAc = AnimationController(vsync: this, duration: Duration(milliseconds: widget.tabDurationMillSec))
+class _CircleNavBarState extends State<CircleNavBar>
+    with TickerProviderStateMixin {
+  late AnimationController tabAc = AnimationController(
+      vsync: this, duration: Duration(milliseconds: widget.tabDurationMillSec))
     ..addListener(() => setState(() {}))
     ..value = getPosition(widget.initIndex);
 
-  late AnimationController activeIconAc = AnimationController(vsync: this, duration: Duration(milliseconds: widget.iconDurationMillSec))
+  late AnimationController activeIconAc = AnimationController(
+      vsync: this, duration: Duration(milliseconds: widget.iconDurationMillSec))
     ..addListener(() => setState(() {}))
     ..value = 1;
 
@@ -206,15 +211,29 @@ class _CircleNavBarState extends State<CircleNavBar> with TickerProviderStateMix
                     }).toList(),
                   ),
                   Positioned(
-                      left: tabAc.value * deviceWidth - widget.circleWidth / 2 - tabAc.value * (widget.padding.left + widget.padding.right),
+                      left: tabAc.value * deviceWidth -
+                          widget.circleWidth / 2 -
+                          tabAc.value *
+                              (widget.padding.left + widget.padding.right),
                       child: Transform.scale(
                         scale: activeIconAc.value,
-                        child: Container(
-                          width: widget.circleWidth,
-                          height: widget.circleWidth,
-                          transform: Matrix4.translationValues(0, -(widget.circleWidth * 0.5) + _CircleBottomPainter.getMiniRadius(widget.circleWidth) - widget.circleWidth * 0.5 * (1 - activeIconAc.value), 0),
-                          // color: Colors.amber,
-                          child: widget.activeIcons[index],
+                        child: GestureDetector(
+                          onTap: () => index = index,
+                          child: Container(
+                            width: widget.circleWidth,
+                            height: widget.circleWidth,
+                            transform: Matrix4.translationValues(
+                                0,
+                                -(widget.circleWidth * 0.5) +
+                                    _CircleBottomPainter.getMiniRadius(
+                                        widget.circleWidth) -
+                                    widget.circleWidth *
+                                        0.5 *
+                                        (1 - activeIconAc.value),
+                                0),
+                            // color: Colors.amber,
+                            child: widget.activeIcons[index],
+                          ),
                         ),
                       )),
                 ],
@@ -311,7 +330,8 @@ class _CircleBottomPainter extends CustomPainter {
     paint.color = color;
 
     if (gradient != null) {
-      Rect shaderRect = Rect.fromCircle(center: Offset(w / 2, h / 2), radius: 180.0);
+      Rect shaderRect =
+          Rect.fromCircle(center: Offset(w / 2, h / 2), radius: 180.0);
       paint.shader = gradient!.createShader(shaderRect);
     }
 
@@ -323,14 +343,16 @@ class _CircleBottomPainter extends CustomPainter {
         path,
         Paint()
           ..color = shadowColor
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, convertRadiusToSigma(elevation)));
+          ..maskFilter = MaskFilter.blur(
+              BlurStyle.normal, convertRadiusToSigma(elevation)));
 
     canvas.drawCircle(
         Offset(x, miniRadius),
         iconWidth / 2,
         Paint()
           ..color = shadowColor
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, convertRadiusToSigma(elevation)));
+          ..maskFilter = MaskFilter.blur(
+              BlurStyle.normal, convertRadiusToSigma(elevation)));
 
     canvas.drawPath(path, paint);
 
