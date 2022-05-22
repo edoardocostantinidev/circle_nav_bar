@@ -180,6 +180,12 @@ class _CircleNavBarState extends State<CircleNavBar>
   }
 
   @override
+  void dispose() {
+    activeIconAc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
